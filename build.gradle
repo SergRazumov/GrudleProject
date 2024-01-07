@@ -1,0 +1,63 @@
+import java.time.LocalDate
+
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+//все что относится к подпроектам, но не относится к root
+subprojects {
+
+}
+
+dependencies {
+    //блок для зависимостей необходимых для компиляции а так же для выполнения проекта
+    //Убрать зависимость из либы
+    implementation ('org.springframework:spring-webmvc:5.0.6.RELEASE') {
+//        exclude(group : 'org.springframework', module:"spring-beans")
+        transitive = false
+    }
+
+
+
+    //блок для зависимостей необходимых ТОЛЬКО для компиляции
+    //compileOnly 'org.springframework:spring-websocket:6.0.11'
+
+    //блок для зависимостей которые являются процессорами аннотаций, используется в процессе компиляции
+    //во время выполнения данного кода пример: Lombok
+    //annotationProcessor ':'
+
+    //блок для зависимостей необходимых для выполнения проекта НЕ для компиляции
+    //runtimeOnly ':'
+
+    //блок для зависимостей необходимых для компиляции а так же для выполнения проекта Тестового кода
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+
+    //блок для зависимостей необходимых для выполнения тестового проекта НЕ для компиляции
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//перечисляем переменные для использования
+ext {
+    javaVersion = 1.8
+    currentDate = LocalDate.now()
+}
+
+//println "config phase"
+//println "Gradle:  ${gradle.hashCode()}, project: ${project.hashCode()}, rootProject: ${rootProject.hashCode()}, rootName: ${rootProject.name}"
+println "Java ${ext.javaVersion}"
+println ext.currentDate
+
+//Подключить плагин
+apply from: 'script.gradle'

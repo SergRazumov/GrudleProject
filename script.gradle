@@ -1,0 +1,45 @@
+//Создаем свою task -> вызов возможен из группы other
+tasks.register('testTask') {
+    println "testTask1"
+}
+
+//Создаем свою task2 в группе myGroup
+tasks.register('testTask2') {
+    description = "this TestTask2"
+    group = "myGroup"
+    println "testTask2"
+
+    doFirst {
+        println "testTask2_DoFirst"
+    }
+}
+
+//Создаем свою task3 -> с параметрами на вход, тем самым создавая myGroup2 -> testTask3
+task testTask3(description: "this TestTask3", group : "myGroup2") {
+
+    println "Gradle:  ${gradle.hashCode()}, project: ${project.hashCode()}, rootProject: ${rootProject.hashCode()}, rootName: ${rootProject.name}"
+
+    doLast {
+        println "doLast"
+    }
+
+    doFirst {
+        println "testTask3_doFirst"
+    }
+
+    doFirst {
+        println "testTask3_doFirst"
+    }
+
+    println "description: ${description}, group: ${group}, actions: ${actions.size()}"
+}
+
+//Теперь Task3 зависит от Task2 при запуске 3 запуститься с начало 2
+testTask3.dependsOn(testTask2)
+
+//После 3 таски обязательно должна выполниться 1
+testTask3.finalizedBy(testTask)
+
+
+gradle.taskGraph.whenReady { TaskExecutionGraph graph -> println "\n!graph! "
+    graph.allTasks.each (it-> println "${it.name}")}
